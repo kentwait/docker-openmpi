@@ -1,10 +1,13 @@
-FROM kentwait/alpine-glibc
+FROM phusion/baseimage:0.9.18
 MAINTAINER Kent Kawashima <kentkawashima@gmail.com>
 
-RUN apk update && apk upgrade \
-  # essentials
-  && apk add --no-cache grep sed gawk gfortran \ 
-  && apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted openmpi openmpi-dev 
+# Ubuntu update
+RUN apt-get update --fix-missing --quiet && apt-get install -y build-essential \
+	wget bzip2 git curl grep sed dpkg \
+	python-dev python3-dev gfortran
+
+# Install OpenMPI
+RUN apt-get install -y libopenmpi-dev openmpi-bin
 
 WORKDIR ${WORKDIR}
 ENTRYPOINT ["/init"]
