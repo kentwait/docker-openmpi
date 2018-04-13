@@ -1,12 +1,33 @@
-FROM phusion/baseimage:0.9.18
-MAINTAINER Kent Kawashima <kentkawashima@gmail.com>
+# kentwait/docker-openmpi
+FROM phusion/baseimage:latest
 
-# Ubuntu update
-RUN apt-get update --fix-missing --quiet && apt-get install -y build-essential \
-	wget bzip2 git curl grep sed dpkg \
-	python-dev python3-dev gfortran
+# Container metadata
+LABEL version="2.0"
+LABEL maintainer="Kent Kawashima <kentkawashima@gmail.com>"
 
-# Install OpenMPI
-RUN apt-get install -y libopenmpi-dev openmpi-bin
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+USER root
 
-CMD ["bash"]
+RUN apt-get update --quiet --fix-missing && \
+	# Install dependencies
+	apt-get install -y \
+		build-essential \
+		wget \	
+		curl \
+		bzip2 \
+		grep \
+		sed \
+		dpkg \
+		git \
+		python-dev \
+		python3-dev \
+		ca-certificates \
+		gfortran && \
+	# Install OpenMPI		
+	apt-get install -y \
+		libopenmpi-dev \
+		openmpi-bin && \
+	apt-get clean && \
+ 	rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT ["/sbin/my_init"]
